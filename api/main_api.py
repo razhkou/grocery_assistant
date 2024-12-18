@@ -1,6 +1,6 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_gigachat.chat_models import GigaChat
-from parser.edadealdo.py import parse_vers_0
+from parser.edadealdo import parse_vers_0
 
 
 def process(bot_inp, city):
