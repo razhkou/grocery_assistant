@@ -1,28 +1,25 @@
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.ext.asyncio import AsyncAttrs, async_sessionmaker, create_async_engine
-from sqlalchemy import BigInteger, String
+from .models import async_session
+from .models import User
+from sqlalchemy import select, update, delete
 
 
-engine = create_async_engine(url='sqlite+aiosqlite:///db.sqlite3')
+async def set_new_user(tg_id, name, city, prefer_prod, prefer_stor):
+    async with async_session() as session:
+        user = await session.scalar(select(User).where(User.tg_id == tg_id))
 
-async_session = async_sessionmaker(engine)
+        if not user:
+            session.add(User(tg_id=tg_id, name=name, city=city, prefer_prod=prefer_prod, prefer_stor=prefer_stor))
+            await session.commit()
+        else:
+            user.name = name
+            user.city = city
+            user.prefer_prod = prefer_prod
+            user.prefer_stor = prefer_stor
 
-
-class Base(AsyncAttrs, DeclarativeBase):
-    pass
-
-
-class User(Base):
-    __tablename__ = 'users'
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    tg_id: Mapped[int] = mapped_column(BigInteger)
-    name: Mapped[str] = mapped_column(String(25))
-    city: Mapped[str] = mapped_column(String(25))
-    prefer_prod: Mapped[str] = mapped_column(String(200))
-    prefer_stor: Mapped[str] = mapped_column(String(200))
+            await session.commit()
 
 
-async def async_main():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+async def get_user(tg_id: int):
+    async with async_session() as session:
+        #user = await session.scalar(select(User).where(User.tg_id == tg_id))
+        return await session.scalar(select(User).where(User.tg_id == tg_id))
