@@ -4,8 +4,6 @@ from parser.edadealdo import parse_vers_0
 
 
 def process(bot_inp, city):
-    if len(bot_inp) < 2:
-        return "Введите полный запрос."
     ai_ret = giga_proc(bot_inp)
     parse_ret = parse_vers_0(city, ai_ret)
     return parse_ret
