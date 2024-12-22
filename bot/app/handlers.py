@@ -59,7 +59,7 @@ async def register_name(message: Message, state: FSMContext):
 async def register_city(message: Message, state: FSMContext):
     await state.update_data(city=message.text)
     await state.set_state(Register.preff_prod)
-    await message.answer('Введите ваши предпочтения по продуктам')
+    await message.answer('Введите ваши предпочтения по продуктам: что не стоит включать в список продуктов(Вам не нравится или у вас аллергия) или какие конкретно продукты вы любите(например, если сметана - то только брест-литовск)')
 
 
 @router.message(Register.preff_prod)
@@ -108,7 +108,7 @@ async def sent_requests(message: Message, state: FSMContext):
     prefer_product = user.prefer_prod
     user_city = user.city
 
-    requests_for_api = str(f"Запрос пользователя: {str(user_request_two)}; Предпочтения: {str(prefer_product)}")
+    requests_for_api = str(f"Запрос пользователя: {str(user_request_two)}; Предпочтения: соль поваренная, {str(prefer_product)}")
     city_for_api = str(user_city)
 
     answer_for_user = process(requests_for_api, city_for_api)
